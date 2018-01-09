@@ -1,0 +1,9 @@
+{
+  "name": "metacritic-webtest",
+  "version": "0.0.0",
+  "description": "metacritic-webtest",
+  "main": "server.js",
+  "author": {
+    "name": "ServiceDock"
+  }
+}
