@@ -1,0 +1,9 @@
+{
+  "name": "metacritic",
+  "version": "0.0.0",
+  "description": "metacritic",
+  "main": "app.js",
+  "author": {
+    "name": "ServiceDock"
+  }
+}
