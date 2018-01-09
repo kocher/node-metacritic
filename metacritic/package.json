@@ -1,9 +1,12 @@
 {
   "name": "metacritic",
-  "version": "0.0.0",
+  "version": "0.0.2",
   "description": "metacritic",
   "main": "app.js",
   "author": {
-    "name": "ServiceDock"
+    "name": "Adriano Cavalari"
+  },
+  "dependencies": {
+    "crawler": "^1.1.2"
   }
 }

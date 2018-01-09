@@ -7,8 +7,7 @@ var port = process.env.PORT || 1337;
 http.createServer(function (req, res) {
     res.writeHead(200, { 'Content-Type': 'text/plain' });
 
+    var result = metacritic.escape2('aaaaa&bbbb"cccc');
 
-    var res = metacritic.escape('aaaaa&bbbb"cccc');
-
-    res.end(res);
+    res.end(result);
 }).listen(port);

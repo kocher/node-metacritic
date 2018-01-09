@@ -4,9 +4,9 @@
   "description": "metacritic-webtest",
   "main": "server.js",
   "author": {
-    "name": "ServiceDock"
+    "name": "Adriano Cavalari"
   },
   "dependencies": {
-    "metacritic": "0.0.0"
+    "metacritic": "0.0.2"
   }
 }

@@ -1,6 +1,30 @@
 'use strict';
 
-console.log('aaa');
+var Crawler = require("crawler");
+
+console.log(Crawl());
+
+
+function Crawl() {
+    var c = new Crawler({
+        maxConnections: 10,
+        // This will be called for each crawled page
+        callback: function (error, res, done) {
+            if (error) {
+                console.log(error);
+            } else {
+                var $ = res.$;
+                // $ is Cheerio by default
+                //a lean implementation of core jQuery designed specifically for the server
+                console.log($("title").text());
+            }
+            done();
+        }
+    });
+
+    c.queue('http://www.google.com');
+    //c.queue('http://www.metacritic.com/browse/games/title/pc?page=1');
+}
 
 /**
  * Escape special characters in the given string of html.
@@ -9,27 +33,5 @@ console.log('aaa');
  * @return {String}
  */
 module.exports = {
-    escape: function (html) {
-        return String(html)
-            .replace(/&/g, '&amp;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#39;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;');
-    },
-
-    /**
-     * Unescape special characters in the given string of html.
-     *
-     * @param  {String} html
-     * @return {String}
-     */
-    unescape: function (html) {
-        return String(html)
-            .replace(/&amp;/g, '&')
-            .replace(/&quot;/g, '"')
-            .replace(/&#39;/g, "'")
-            .replace(/&lt;/g, '<')
-            .replace(/&gt;/g, '>');
-    }
+    crawl: Crawl()
 };
