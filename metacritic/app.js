@@ -10,9 +10,9 @@ var url = 'https://www.metacritic.com/'
 , urlPage = '?page={0}'
 , currentPage = 0;
 
-console.log(SearchAll({ text: 'spider-man', whole: true }, function (err, list) {
-    var a = list;
-}));
+//console.log(SearchAll({ text: 'spider-man', whole: true }, function (err, list) {
+//    var a = list;
+//}));
 
 function SearchAll(options, cb) {
     try {

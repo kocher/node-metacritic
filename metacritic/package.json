@@ -1,7 +1,7 @@
 {
   "name": "metacritic",
-  "version": "0.0.2",
-  "description": "metacritic",
+  "version": "0.0.4",
+  "description": "Metacritic is designed to be the simplest way possible to get information from metacritic.com.",
   "main": "app.js",
   "author": {
     "name": "Adriano Cavalari"
