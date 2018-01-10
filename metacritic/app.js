@@ -1,18 +1,19 @@
 'use strict';
 
 var request = require('request')
-, cheerio = require('cheerio')
-, extend = require('extend');
+    , cheerio = require('cheerio')
+    , extend = require('extend');
 
 var url = 'https://www.metacritic.com/'
-, urlSearchAll = 'search/{0}/{1}/results'
-, urlGames = 'browse/games/'
-, urlPage = '?page={0}'
-, currentPage = 0;
+    , urlSearchAll = 'search/{0}/{1}/results'
+    , urlGames = 'browse/games/'
+    , urlPage = '?page={0}'
+    , currentPage = 0;
 
-//console.log(SearchAll({ text: 'spider-man', whole: true }, function (err, list) {
-//    var a = list;
-//}));
+//SearchAll({ text: 'spider-man', whole: true }, function (err, list) {
+//    console.log('Finish');
+
+//});
 
 function SearchAll(options, cb) {
     try {
@@ -25,15 +26,16 @@ function SearchAll(options, cb) {
 
         extend(opt, options);
 
-        if (options.whole) {
-            var listTotal = [];
-            switch (opt.category) {
-                case 'all':
-                    SearchAllCategories(opt.text, function (err, total) {
+        var listTotal = [];
+
+        switch (opt.category) {
+            case 'all':
+                if (options.whole) {
+                    SearchAllCategoryTotal(opt.text, function (err, total) {
                         var j = 0;
 
                         for (var i = 0; i < total; i++) {
-                            SearchAllCategories(opt.text, function (err, list, page) {
+                            SearchAllCategory(opt.text, function (err, list, page) {
                                 j++;
                                 listTotal[page] = list;
 
@@ -45,41 +47,91 @@ function SearchAll(options, cb) {
                             }, i);
                         }
                     }, 0, true);
-                    break;
-                case 'games':
-                    SearchGame(opt.text, cb, opt.page);
-                    break;
-                default:
-                    SearchAllCategories(opt.text, cb);
-            }
-        } else {
-            switch (opt.category) {
-                case 'all':
-                    SearchAllCategories(opt.text, cb, opt.page);
-                case 'games':
-                    SearchGame(opt.text, cb, opt.page);
+                } else {
+                    SearchAllCategory(opt.text, cb, opt.page);
+                }
+                break;
 
-                default:
-                    SearchAllCategories(opt.text, cb);
-            }
+            case 'games':
+                if (options.whole) {
+                    SearchGameTotal(opt.text, function (err, total) {
+                        var j = 0;
+
+                        for (var i = 0; i < total; i++) {
+                            SearchGame(opt.text, function (err, list, page) {
+                                j++;
+                                listTotal[page] = list;
+
+                                if (j == total) {
+                                    var final = listTotal.reduce((a, b) => a.concat(b), []);
+
+                                    cb(null, final);
+                                }
+                            }, i);
+                        }
+                    }, 0, true);
+                } else {
+                    SearchGame(opt.text, cb, opt.page);
+                }
+
+                break;
+
+            default:
+                SearchAllCategory(opt.text, cb);
+                break;
+
         }
     } catch (e) {
         console.log(e);
     }
 }
 
-function SearchAllCategories(text, cb, page = 0, justTotal = false) {
+function SearchAllCategoryTotal(text, cb) {
+    var finalUrl = url + urlSearchAll.replace('{0}', 'all').replace('{1}', text);
+
+    RequestTotal(finalUrl, cb);
+}
+
+function SearchAllCategory(text, cb, page = 0) {
     var finalUrl = url + urlSearchAll.replace('{0}', 'all').replace('{1}', text) + urlPage.replace('{0}', page);
 
-    request(finalUrl, function (err, response, html) {
+    RequestSearch(finalUrl, cb, page);
+}
+
+function SearchGameTotal(text, cb) {
+    var finalUrl = url + urlSearchAll.replace('{0}', 'game').replace('{1}', text);
+
+    RequestTotal(finalUrl, cb);
+}
+
+function SearchGame(text, cb, page = 0) {
+    var finalUrl = url + urlSearchAll.replace('{0}', 'game').replace('{1}', text) + urlPage.replace('{0}', page);
+
+    RequestSearch(finalUrl, cb, page);
+}
+
+function RequestTotal(url, cb) {
+    request(url, function (err, response, html) {
         if (!err) {
             var $ = cheerio.load(html);
 
-            if (justTotal) {
-                var total = GetTotal($);
-                cb(null, total);
-                return;
-            }
+            var lastCount = $('.page_num').last();
+
+            var total = lastCount.text().trim();
+
+            cb(null, total);
+        } else {
+            cb(err);
+        }
+    }).on('error', function (e) {
+        cb(error);
+    }).end();
+}
+
+function RequestSearch(url, cb, page) {
+    request(url, function (err, response, html) {
+        if (!err) {
+            var $ = cheerio.load(html);
 
             var list = GetData($);
 
@@ -98,81 +150,6 @@ function SearchAllCategories(text, cb, page = 0, justTotal = false) {
     }).end();
 }
 
-function SearchGame(text, cb, page = 0, justTotal = false) {
-    var finalUrl = url + urlSearchAll.replace('{0}', 'game').replace('{1}', text) + urlPage.replace('{0}', page);
-
-    request(finalUrl, function (err, response, html) {
-        if (!err) {
-            var $ = cheerio.load(html);
-
-            if (justTotal) {
-                var total = GetTotal($);
-                cb(null, total);
-                return;
-            }
-
-            var list = GetData($);
-
-            if (list.length == 0) {
-                cb('No results');
-                return;
-            }
-
-            cb(null, list);
-        } else {
-            cb(err);
-        }
-    }).on('error', function (e) {
-        cb(error);
-    }).end();
-}
-
-function Search2(text, cb) {
-
-    request(url + urlSearch.replace('{0}', text), function (error, response, html) {
-        if (!error) {
-            //console.error('Page: ' + page);
-
-            var $ = cheerio.load(html);
-
-            //if ($('.cg-game').length == 0) {
-            //    cb();
-            //}
-
-            var list = []
-
-            $('.product_title').filter(function () {
-                var game = { link: "" };
-
-                var data = $(this);
-                var a = data.find('a');
-                var title = a.text().trim();
-                var link = a.attr('href');
-
-                game.link = link;
-                list.push(game);
-            })
-
-            if (list.length == 0) {
-                cb();
-                return;
-            }
-        } else {
-            console.error('Error: ' + error);
-
-            //cb(error);
-        }
-    }).on('error', function (e) {
-        console.error('Error: ' + e);
-    }).end();
-}
-
-function GetTotal($) {
-    var lastCount = $('.page_num').last();
-    
-    return lastCount.text().trim();
-}
-
 function GetData($) {
     var list = [];
 
@@ -180,11 +157,13 @@ function GetData($) {
         var product = {};
 
         var data = $(this);
-        var a = data.find('.product_title a');
+        var Title = data.find('.product_title a');
+        var Type = data.find('.result_type');
 
-        product.type = data.find('.result_type').find('strong').text().trim();
-        product.title = a.text().trim();
-        product.link = url + a.attr('href');
+        product.type = Type.find('strong').text().trim();
+        product.platform = Type.find('.platform').text().trim();
+        product.title = Title.text().trim();
+        product.link = url + Title.attr('href');
         product.releaseDate = data.find('.release_date').find('.data').text().trim();
         product.rated = data.find('.rated').find('.data').text().trim();
         product.publisher = data.find('.publisher').find('.data').text().trim();
@@ -192,27 +171,23 @@ function GetData($) {
         product.genre = data.find('.genre').find('.data').text().trim().replace(/                                                             /g, ' ');
         product.userScore = data.find('.product_avguserscore').find('.data').text().trim();
         product.runtime = data.find('.runtime').find('.data').text().trim();
-        product.short_description = data.find('.deck').text().trim();
+        product.summary_short = data.find('.deck').text().trim();
         product.metascore = data.find('.metascore_w').text().trim();
 
-         
         list.push(product);
     });
 
     return list;
 }
 
-/**
- * Search for data on metacritic.
- */
 module.exports = {
     /**
-     * Search for data on metacritic.
+     * Search for All data on metacritic.
      *
      * @param  {Object} options
      * @param  {Function} cb
      */
     SearchAll: SearchAll,
-    SearchAllCategories: SearchAllCategories,
+    SearchAllCategory: SearchAllCategory,
     SearchGame: SearchGame
 };
