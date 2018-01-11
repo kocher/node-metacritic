@@ -1,4 +1,6 @@
-﻿## What is it?
+﻿# node-metacritic
+
+## What is it?
 
 Metacritic is designed to be the simplest way to get data from metacritic.com.
 
@@ -23,7 +25,7 @@ metacritic.SearchAll({ text: 'spider-man' }, function (err, list) {
 ## Options
 
 | Property | Description | Default |
-| --- | --- |
+| --- | --- | --- |
 | `category` | All or Game | All |
 | `text` | Text for searching e.g Spider-Man | |
 | `page` | Page number | 0 |
