@@ -1,14 +1,24 @@
 {
   "name": "metacritic",
-  "version": "0.0.6",
+  "version": "0.0.10",
   "description": "Metacritic is designed to be the simplest way to get data from metacritic.com.",
   "main": "app.js",
   "author": {
     "name": "Adriano Cavalari"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adrianocavalari/node-metacritic/tree/master/metacritic"
+  },
   "dependencies": {
     "cheerio": "^1.0.0-rc.2",
     "extend": "^3.0.1",
     "request": "^2.83.0"
-  }
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://www.opensource.org/licenses/mit-license.php"
+    }
+  ]
 }
