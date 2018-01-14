@@ -1,6 +1,6 @@
 {
   "name": "metacritic",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Metacritic is designed to be the simplest way to get data from metacritic.com.",
   "main": "app.js",
   "author": {
