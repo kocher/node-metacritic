@@ -1,4 +1,4 @@
-# node-metacritic
+﻿# node-metacritic
 
 ## What is it?
 
@@ -16,7 +16,7 @@ npm install metacritic
 ```
 var metacritic = require('metacritic');
 
-metacritic.SearchAll({ text: 'spider-man' }, function (err, list) {
+metacritic.Search({ text: 'spider-man' }, function (err, list) {
 
 });
 
@@ -26,7 +26,7 @@ metacritic.SearchAll({ text: 'spider-man' }, function (err, list) {
 
 | Property | Description | Default |
 | --- | --- | --- |
-| `category` | All or Game | All |
-| `text` | Text for searching e.g Spider-Man | |
+| `category` | all, movie, game, album, tv(TV show), person, video(Trailer), company | all |
+| `text` | Text for searching e.g Spider-Man, Will Smith, Warner | |
 | `page` | Page number | 0 |
 | `whole` | If you want to get the whole list instead of just the first page | false |
