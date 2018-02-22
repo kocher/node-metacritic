@@ -207,7 +207,7 @@ function RequestSearch(url, cb, page) {
             cb(err);
         }
     }).on('error', function (e) {
-        cb(error);
+        cb(e);
     }).end();
 }
 
