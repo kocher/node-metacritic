@@ -1,6 +1,6 @@
 {
-  "name": "metacritic",
-  "version": "0.0.11",
+  "name": "metacritic-switch",
+  "version": "0.0.1",
   "description": "Metacritic is designed to be the simplest way to get data from metacritic.com.",
   "main": "app.js",
   "author": {
@@ -8,12 +8,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/adrianocavalari/node-metacritic/tree/master/metacritic"
+    "url": "https://github.com/kocher/node-metacritic/tree/master/metacritic"
   },
   "dependencies": {
-    "cheerio": "^1.0.0-rc.2",
-    "extend": "^3.0.1",
-    "request": "^2.83.0"
+    "cheerio": "^1.0.0-rc.3",
+    "extend": "^3.0.2",
+    "request": "^2.88.2"
   },
   "licenses": [
     {
