@@ -1,0 +1,25 @@
+{
+  "name": "metacritic",
+  "version": "1.0.0",
+  "description": "Scrape search results from metacritic",
+  "main": "foo.js",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
+    "extend": "^3.0.2",
+    "request": "^2.88.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kocher/node-metacritic.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kocher/node-metacritic/issues"
+  },
+  "homepage": "https://github.com/kocher/node-metacritic#readme"
+}

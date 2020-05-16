@@ -6,6 +6,7 @@ var request = require('request')
 
 var url = 'https://www.metacritic.com/'
     , urlSearchAll = 'search/{0}/{1}/results'
+    , urlSearchAllByPlatform = 'search/{0}/{1}/results?search_type=advanced&plats[{2}]=1'
     , urlPage = '?page={0}'
     , currentPage = 0;
 
@@ -15,24 +16,6 @@ var opt = {
     page: 0,
     whole: false
 };
-
-//Search({ text: 'will smith', whole: false, category: 'all' }, function (err, list) {
-//    list.forEach(function (v) {
-//        console.log(v);
-//    });
-//});
-
-//Search({ text: 'will smith', whole: false, category: 'person' }, function (err, list) {
-//    list.forEach(function (v) {
-//        console.log(v);
-//    });
-//});
-
-//Search({ text: 'warner', whole: true, category: 'company' }, function (err, list) {
-//    list.forEach(function (v) {
-//        console.log(v);
-//    });
-//});
 
 function Search(options, cb) {
     try {
@@ -61,86 +44,12 @@ function Search(options, cb) {
                 }
             }, 0, true);
         } else {
-            SearchCategory(opt.text, opt.category, cb, opt.page);
+            if (opt.platformId) {
+                SearchCategoryByPlatform(opt.text, opt.category, opt.platformId, cb, opt.page);
+            } else {
+                SearchCategory(opt.text, opt.category, cb, opt.page);
+            }
         }
-
-        //switch (opt.category) {
-        //    case 'all':
-        //        if (options.whole) {
-        //            SearchAllCategoryTotal(opt.text, function (err, total) {
-        //                var j = 0;
-
-        //                for (var i = 0; i < total; i++) {
-        //                    SearchAllCategory(opt.text, function (err, list, page) {
-        //                        j++;
-        //                        listTotal[page] = list;
-
-        //                        if (j == total) {
-        //                            var final = listTotal.reduce((a, b) => a.concat(b), []);
-
-        //                            cb(null, final);
-        //                        }
-        //                    }, i);
-        //                }
-        //            }, 0, true);
-        //        } else {
-        //            SearchAllCategory(opt.text, cb, opt.page);
-        //        }
-        //        break;
-
-        //    case 'game':
-        //        if (options.whole) {
-        //            SearchGameTotal(opt.text, function (err, total) {
-        //                var j = 0;
-
-        //                for (var i = 0; i < total; i++) {
-        //                    SearchGame(opt.text, function (err, list, page) {
-        //                        j++;
-        //                        listTotal[page] = list;
-
-        //                        if (j == total) {
-        //                            var final = listTotal.reduce((a, b) => a.concat(b), []);
-
-        //                            cb(null, final);
-        //                        }
-        //                    }, i);
-        //                }
-        //            }, 0, true);
-        //        } else {
-        //            SearchGame(opt.text, cb, opt.page);
-        //        }
-
-        //        break;
-
-        //    case 'movie':
-        //        if (options.whole) {
-        //            SearchGameTotal(opt.text, function (err, total) {
-        //                var j = 0;
-
-        //                for (var i = 0; i < total; i++) {
-        //                    SearchGame(opt.text, function (err, list, page) {
-        //                        j++;
-        //                        listTotal[page] = list;
-
-        //                        if (j == total) {
-        //                            var final = listTotal.reduce((a, b) => a.concat(b), []);
-
-        //                            cb(null, final);
-        //                        }
-        //                    }, i);
-        //                }
-        //            }, 0, true);
-        //        } else {
-        //            SearchGame(opt.text, cb, opt.page);
-        //        }
-
-        //        break;
-
-        //    default:
-        //        SearchAllCategory(opt.text, cb);
-        //        break;
-
-        //}
 
     } catch (e) {
         console.log(e);
@@ -159,17 +68,11 @@ function SearchCategory(text, category, cb, page = 0) {
     RequestSearch(finalUrl, cb, page);
 }
 
-//function SearchGameTotal(text, cb) {
-//    var finalUrl = url + urlSearchAll.replace('{0}', 'game').replace('{1}', text);
+function SearchCategoryByPlatform(text, category, platformId, cb, page = 0) {
+    var finalUrl = url + urlSearchAllByPlatform.replace('{0}', category).replace('{1}', text).replace('{2}', platformId);
 
-//    RequestTotal(finalUrl, cb);
-//}
-
-//function SearchGame(text, cb, page = 0) {
-//    var finalUrl = url + urlSearchAll.replace('{0}', 'game').replace('{1}', text) + urlPage.replace('{0}', page);
-
-//    RequestSearch(finalUrl, cb, page);
-//}
+    RequestSearch(finalUrl, cb, page);
+}
 
 function RequestTotal(url, cb) {
     request(url, function (err, response, html) {
@@ -190,6 +93,7 @@ function RequestTotal(url, cb) {
 }
 
 function RequestSearch(url, cb, page) {
+    console.log(url);
     request(url, function (err, response, html) {
         if (!err) {
             var $ = cheerio.load(html);
