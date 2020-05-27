@@ -22,6 +22,8 @@ function Search(options, cb) {
         if (options.category)
             options.category = options.category.toLowerCase();
 
+        options.text = encodeURI(options.text);
+
         extend(opt, options);
 
         var listTotal = [];
