@@ -4,6 +4,8 @@
 
 Metacritic is designed to be the simplest way to get data from metacritic.com.
 
+This fork has added ability to filter by platform.
+
 ## Intall
 
 ```
